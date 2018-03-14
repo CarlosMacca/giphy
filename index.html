@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>APIs-Ajax</title>
+</head>
+<body>
+    <div class="container">
+        <div id="animals-view"></div>
+    <div id="animalButtons">
+
+    </div>
+
+   <form id="animal-form">
+    <label for="animal-input">Add an animal</label>
+    <input type="text" id="animal-input">
+
+    <input id="addAnimal" type="submit" value="submit">
+   </form>
+
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+var animals = ["hamster", "dog", "cat", "bird", "fish", "dragon", "insect"];
+
+function renderButtons() {
+
+    $("#animals-view").empty();
+
+    for (var i = 0; i < animals.length; i++) {
+      var a = $("<button>");
+      a.addClass("animal-btn");
+      a.attr("data-name", animals[i]);
+      a.text(animals[i]);
+      $("#animals-view").append(a);
+    }
+  }
+
+
+    $("#addAnimal").on("click", function(event) {
+    event.preventDefault();
+    var animal = $("#animal-input").val();
+    animals.push(animal);
+    renderButtons();
+});
+
+renderButtons();
+
+    $("button").on("click", function() {
+    var animalPlot = $(this).attr("data-name");
+   
+     var queryURL = "https://api.giphy.com/v1/gifs/search?" +
+     "api_key=QqAT80q1iqn6a6N232lBJvRK9I7zNL9J"+ "&q=" + animalPlot + "&limit=10&offset=0&lang=en";
+    $.ajax({
+           url: queryURL,
+         method: "GET"
+       }).then(function (response) {
+var results = response.data;
+         
+          for (var i = 0; i < results.length; i++) {
+            var anDiv = $("<div>");
+            
+            var p = $("<p>").text("Rating: " + results[i].rating);
+            var animalImage = $("<img>");
+            
+            animalImage.attr("src", results[i].images.fixed_height.url);
+            anDiv.append(p);
+            anDiv.append(animalImage);
+            $("#animalButtons").prepend(anDiv);
+          }
+        });
+    });
+   
+    
+   
+        </script>
+
+    </div>
+</body>
+</html>
